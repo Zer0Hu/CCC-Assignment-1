@@ -1,5 +1,6 @@
 import time
 import numpy as np
+import re
 from Utils import read_file, extract_sentiment, extract_created_at
 
 # Read files
@@ -22,12 +23,12 @@ for row in read_file(file_2):
     datetime = extract_created_at(row)
 
     # record them in the array
-    if (datetime not None):
+    if (datetime is not None):
         #index starts from 0, month and day start from 1, so minus one
-        hour_sentiment[datetime[0]-1, datetime[1]-1, datetime[2]] += sentiment
+        hour_count[datetime[0]-1, datetime[1]-1, datetime[2]] += 1
 
-    if (sentiment is not None):
-        hour_sentiment[datetime[0]-1, datetime[1]-1, datetime[2]] += sentiment
+        if (sentiment is not None):
+            hour_sentiment[datetime[0]-1, datetime[1]-1, datetime[2]] += sentiment
 
 
 print("run time:", time.time() - t0) # Using the time when finish reading 
