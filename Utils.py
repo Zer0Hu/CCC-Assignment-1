@@ -16,19 +16,16 @@ def read_file(file_path):
 
 
 def extract_sentiment(line):
-    # 检查该行是否包含 "sentiment" 字段
-    if '"sentiment":' in line:
-        # 找到 "sentiment" 字段后面的值
-        start_index = line.index('"sentiment":') + len('"sentiment":')
-        end_index = line.index(',', start_index)  
-        sentiment_value_str = line[start_index:end_index].strip()  
-
-        # 将sentiment转换为float
+    # 查找匹配的情感值
+    match = re.search(r'"sentiment":(-?\d+(\.\d+)?)', line)
+    if match:
         try:
-            sentiment_value = float(sentiment_value_str)
-            return sentiment_value
+            # 尝试将匹配到的字符串转换为浮点数
+            sentiment = float(match.group(1))
+            return sentiment
         except ValueError:
-            print("Error converting sentiment value to float:", sentiment_value_str)
+            # 如果无法转换为float，则返回 None
+            # 所以如果sentiment不是数字， ignore
             return None
     else:
         return None
