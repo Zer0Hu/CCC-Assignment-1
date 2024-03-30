@@ -16,11 +16,11 @@ def read_file(file_path):
 
 
 def extract_sentiment(line):
-    # 查找匹配的情感值
+    # 查找匹配的sentiment
     match = re.search(r'"sentiment":(-?\d+(\.\d+)?)', line)
     if match:
         try:
-            # 尝试将匹配到的字符串转换为浮点数
+            # 尝试将匹配到的string转换为float
             sentiment = float(match.group(1))
             return sentiment
         except ValueError:
@@ -36,8 +36,8 @@ def extract_created_at(line):
     # 用正则表达式从string中匹配创建时间
     match = re.search(r'"created_at":"([^"]+)"', line)
     if match:
-        created_at_str = match.group(1)  # 获取匹配到的时间字符串
-        # 提取月、日、小时
+        created_at_str = match.group(1)  # 获取匹配到的string
+        # 提取month, day, hour
         date_time_match = re.match(r'\d{4}-\d{2}-\d{2}T(\d{2}):', created_at_str)
         if date_time_match:
             month = int(created_at_str[5:7])
@@ -49,6 +49,7 @@ def extract_created_at(line):
     else:
         return None
     
+
 
 
     
