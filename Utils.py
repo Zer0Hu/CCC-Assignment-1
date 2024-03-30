@@ -26,6 +26,7 @@ def extract_sentiment(line):
         except ValueError:
             # 如果无法转换为float，则返回 None
             # 所以如果sentiment不是数字， ignore
+            # ！！(所以我没有考虑sentiment不是float的情况，据说有些sentiment后面跟的是个dictionary)！！
             return None
     else:
         return None
@@ -76,6 +77,33 @@ def calculate_q2(hour_sentiment):
     
     return happiest_day, happiest_day_index
 
+
+def calculate_q3(hour_count):
+    max_count = 0  # 初始设为0
+    most_active_hour_index = None  # 最active的小时的index
+
+    
+    for month in range(hour_count.shape[0]):
+        for day in range(hour_count.shape[1]):
+            for hour in range(hour_count.shape[2]):
+                count = hour_count[month, day, hour]
+                # 如果当前小时的count大于max_count，则更新max_count和index
+                if count > max_count:
+                    max_count = count                    
+                    most_active_hour_index = (month + 1, day + 1, hour)
+
+    return max_count, most_active_hour_index
+
+
+def calculate_q4(hour_count):
+     # 将第三维度（小时）的值加起来，得到每天的total counts
+    day_count_total = np.sum(hour_count, axis=2)
+    
+    # 找到tweets count最大的一天和对应的index
+    most_active_day_count = np.max(day_count_total)
+    most_active_day_index = np.unravel_index(np.argmax(day_count_total), day_count_total.shape)
+    
+    return most_active_day_count, most_active_day_index
 
 
     

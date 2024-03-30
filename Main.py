@@ -2,7 +2,7 @@ import time
 import numpy as np
 import re
 from Utils import read_file, extract_sentiment, extract_created_at
-from Utils import calculate_q1,calculate_q2
+from Utils import calculate_q1,calculate_q2, calculate_q3, calculate_q4
 
 # Read files
 file_1 = 'twitter-1mb.json'
@@ -39,14 +39,36 @@ print("run time:", time.time() - t0) # Using the time when finish reading
 
 # Question 1
 max_sentiment, happiest_hour_index = calculate_q1(hour_sentiment)
-print("The happiest hour ever is at {}-{} {}:00, with a sentiment score of {:.2f}".format(
-    happiest_hour_index[0], happiest_hour_index[1], happiest_hour_index[2], max_sentiment))
+month, day, hour = happiest_hour_index
+am_pm = "am" if hour < 12 else "pm"
+start_hour = str((hour % 12) or 12) + am_pm  # 转换小时为12小时制，并加上AM/PM信息
+end_hour = str(((hour + 1) % 12) or 12) + am_pm  # 计算结束小时的12小时制表示形式
+print("The happiest hour ever is at {}-{}, {} - {}, with a sentiment score of {:.2f}".format(
+            month, day, start_hour, end_hour, max_sentiment))
 
 
 # Question 2
 happiest_day, happiest_day_index = calculate_q2(hour_sentiment)
 print("The happiest day ever is at {}-{}, with a total sentiment score of {:.2f}".format(
     happiest_day_index[0]+1, happiest_day_index[1]+1, happiest_day))
+
+
+# Question 3
+max_count, most_active_hour_index = calculate_q3(hour_count)
+max_count = int(max_count)
+month, day, hour = most_active_hour_index
+am_pm = "am" if hour < 12 else "pm"
+start_hour = str((hour % 12) or 12) + am_pm  # 转换小时为12小时制，并加上AM/PM信息
+end_hour = str(((hour + 1) % 12) or 12) + am_pm  # 计算结束小时的12小时制表示形式
+print("The most active hour ever is at {}-{}, {} - {}, had the most tweets(#{})".format(
+            month, day, start_hour, end_hour, max_count))
+
+
+# Question 4
+most_active_day_count, most_active_day_index = calculate_q4(hour_count)
+print("The most active day ever is at {}-{}, had the most tweets(#{})".format(
+    most_active_day_index[0]+1, most_active_day_index[1]+1, most_active_day_count))
+
 
 
 
