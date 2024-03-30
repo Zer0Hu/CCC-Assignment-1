@@ -1,13 +1,31 @@
 import time
 import numpy as np
 import re
+import os
 from datetime import datetime
 
-def read_file(file_path):
+def read_file(rank, size,file_path):
+    f_size = os.path.getsize(file_path)
+    # 每个node读一样的size的file， 把整个file平均分成size份
+    bytes_per_node = f_size // size
+    chunk_start = rank * bytes_per_node
+    bytes_readed = 0 # 当前node已经读了多少byte，初始值为0
+
+
     f = open(file_path,"rb")
+    f.seek(chunk_start,0) #找到当前node开始读的地方
     for line in f:
-        yield line.decode()
+
+        # 如果一行在中间被分开了怎么办？
+        # 方案：除了rank0, 其他rank都不读第一行，让前一个rank读
+        if rank == 0 or bytes_readed > 0:
+            yield line.decode()
     
+        bytes_readed += len(line)
+
+        if bytes_readed >= bytes_per_node:
+            break
+
     f.close()
 # lazy load, only load when the program needs to.
 # Read in lines one by one to save memory.
